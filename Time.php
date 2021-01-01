@@ -10,7 +10,7 @@ class Time {
 	}
 	
 	static public function file_timestamp(int $base_time=0): string{
-		return date('Y-m-d_His', self::time_local_offset($base_time));
+		return date('Y-m-d-His', self::time_local_offset($base_time));
 	}
 	
 	static private function time_local_offset(int $base_time=0, string $timezone=self::DEFAULT_TIMEZONE){
