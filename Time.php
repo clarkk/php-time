@@ -15,6 +15,10 @@ class Time {
 		return date('Y-m-d H:i:s', self::time_local_offset($time));
 	}
 	
+	static public function file_datestamp(int $time=0): string{
+		return date('Y-m-d', self::time_local_offset($time));
+	}
+	
 	static public function file_timestamp(int $time=0): string{
 		return date('Y-m-d-His', self::time_local_offset($time));
 	}
