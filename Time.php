@@ -23,7 +23,7 @@ class Time {
 		return date('Y-m-d-His', self::time_local_offset($time));
 	}
 	
-	static private function time_local_offset(int $time=0, string $timezone=self::DEFAULT_TIMEZONE): int{
+	static public function time_local_offset(int $time=0, string $timezone=self::DEFAULT_TIMEZONE): int{
 		return $time ?: time() + (new \DateTimeZone($timezone))->getOffset(new \DateTime('now'));
 	}
 }
