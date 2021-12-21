@@ -15,8 +15,8 @@ class Time {
 		return date('Y-m-d H:i:s', self::time_local_offset($time));
 	}
 	
-	static public function timestamp_ms(int $time=0): string{
-		return date('Y-m-d H:i:s'.substr((string)microtime(), 1, 4), self::time_local_offset($time));
+	static public function timestamp_ms(): string{
+		return date('Y-m-d H:i:s'.substr((string)microtime(), 1, 4), self::time_local_offset());
 	}
 	
 	static public function file_datestamp(int $time=0): string{
