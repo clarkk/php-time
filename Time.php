@@ -19,6 +19,10 @@ class Time {
 		return date('Y-m-d H:i:s'.substr((string)microtime(), 1, 4), self::time_local_offset());
 	}
 	
+	public static function timestamp_rfc(int $time=0): string{
+		return date('D, j M Y H:i:s O', self::time_local_offset($time));
+	}
+	
 	static public function file_datestamp(int $time=0): string{
 		return date('Y-m-d', self::time_local_offset($time));
 	}
