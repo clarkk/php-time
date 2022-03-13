@@ -37,21 +37,23 @@ class Time {
 		return $time ?: time() + (new \DateTimeZone($timezone))->getOffset(new \DateTime('now'));
 	}
 	
-	static public function date(string $date, string $sep='-'): int{
-		if(strpos($date, $sep)){
-			$parts = explode($sep, $date);
-		}
-		else{
+	static public function date(string $date): int{
+		$date = trim($date);
+		
+		if(ctype_digit($date)){
 			$parts = [
 				substr($date, 0, 2),
 				substr($date, 2, 2),
 				substr($date, 4, 4)
 			];
 		}
+		else{
+			$parts = preg_split('/\D/', $date);
+		}
 		
-		$parts[0] ??= 0;
-		$parts[1] ??= 0;
-		$parts[2] ??= 0;
+		$parts[0] = empty($parts[0]) ? 0 : $parts[0];
+		$parts[1] = empty($parts[1]) ? 0 : $parts[1];
+		$parts[2] = empty($parts[2]) ? 0 : $parts[2];
 		
 		if(strlen($parts[0]) == 4){
 			$parts = [
