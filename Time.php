@@ -47,6 +47,9 @@ class Time {
 				substr($date, 4, 4)
 			];
 		}
+		elseif(strpos($date, '-')){
+			$parts = explode('-', $date);
+		}
 		else{
 			$parts = preg_split('/\D/', $date);
 		}
