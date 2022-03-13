@@ -51,9 +51,9 @@ class Time {
 			$parts = preg_split('/\D/', $date);
 		}
 		
-		$parts[0] = empty($parts[0]) ? 0 : $parts[0];
-		$parts[1] = empty($parts[1]) ? 0 : $parts[1];
-		$parts[2] = empty($parts[2]) ? 0 : $parts[2];
+		$parts[0] = empty($parts[0]) ? 0 : (int)$parts[0];
+		$parts[1] = empty($parts[1]) ? 0 : (int)$parts[1];
+		$parts[2] = empty($parts[2]) ? 0 : (int)$parts[2];
 		
 		if(strlen($parts[0]) == 4){
 			$parts = [
