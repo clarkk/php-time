@@ -37,6 +37,40 @@ class Time {
 		return $time ?: time() + (new \DateTimeZone($timezone))->getOffset(new \DateTime('now'));
 	}
 	
+	static public function time_offset(bool $interval_month, int $interval_value, int $time): int{
+		//	months
+		if($interval_month){
+			$day 	= date('d', $time);
+			$month 	= date('n', $time);
+			$year 	= date('Y', $time);
+			
+			for($i=0; $i<$interval_value; $i++){
+				if($month == 12){
+					$month = 1;
+					$year++;
+				}
+				else{
+					$month++;
+				}
+			}
+			
+			if(checkdate($month, $day, $year)){
+				return mktime(0,0,0, $month, $day, $year) - (60*60*24);
+			}
+			else{
+				while(!checkdate($month, $day, $year)){
+					$day--;
+				}
+				
+				return mktime(0,0,0, $month, $day, $year);
+			}
+		}
+		//	days
+		else{
+			return $time + (60*60*24* ($interval_value - 1));
+		}
+	}
+	
 	static public function date(string $date): int{
 		$date = trim($date);
 		
