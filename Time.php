@@ -13,6 +13,10 @@ class Time {
 		return mktime(0,0,0, date('m', $time), date('d', $time), date('Y', $time));
 	}
 	
+	static public function datestamp(int $time=0): string{
+		return date('Y-m-d', self::time_local_offset($time));
+	}
+	
 	static public function timestamp(int $time=0): string{
 		return date('Y-m-d H:i:s', self::time_local_offset($time));
 	}
