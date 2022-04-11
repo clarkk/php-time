@@ -13,7 +13,7 @@ class Time {
 		self::$format_locale 	= $format_locale;
 	}
 	
-	static public function format(string $format, int $time_utc, bool $apply_timezone=false): string{
+	static public function format(string $format, int $time, bool $apply_timezone=false): string{
 		// https://unicode-org.github.io/icu/userguide/format_parse/datetime/#date-field-symbol-table
 		
 		/*
@@ -49,7 +49,7 @@ class Time {
 			$apply_timezone ? self::$timezone : null,
 			null,
 			$format)
-		)->format(self::create_time($time_utc, false));
+		)->format(self::create_time($time, false));
 	}
 	
 	static public function time_today(): int{
@@ -66,20 +66,20 @@ class Time {
 		return self::create_time($time, $apply_timezone)->format('Y-m-d H:i:s');
 	}
 	
-	static public function timestamp_ms(): string{
-		return self::create_time()->format('Y-m-d H:i:s').substr((string)microtime(), 1, 4);
-	}
-	
 	static public function timestamp_rfc(int $time=0, bool $apply_timezone=false): string{
 		return self::create_time($time, $apply_timezone)->format('D, j M Y H:i:s O');
 	}
 	
-	static public function file_datestamp(int $time=0, bool $apply_timezone=false): string{
-		return self::create_time($time, $apply_timezone)->format('Y-m-d');
+	static public function timestamp_ms(): string{
+		return self::create_time()->format('Y-m-d H:i:s').substr((string)microtime(), 1, 4);
 	}
 	
-	static public function file_timestamp(int $time=0, bool $apply_timezone=false): string{
-		return self::create_time($time, $apply_timezone)->format('Y-m-d-His');
+	static public function file_datestamp(int $time=0): string{
+		return self::create_time($time)->format('Y-m-d');
+	}
+	
+	static public function file_timestamp(int $time=0): string{
+		return self::create_time($time)->format('Y-m-d-His');
 	}
 	
 	static public function time_offset(bool $interval_month, int $interval_value, int $time): int{
@@ -163,18 +163,28 @@ class Time {
 		return -1;
 	}
 	
-	static private function create_time(int $time_utc=0, bool $apply_timezone=false){
-		$timezone = $apply_timezone ? new \DateTimeZone(self::$timezone) : null;
+	static private function create_time(int $time=0, bool $apply_timezone=true){
+		$timezone = null;
 		
-		if($time_utc){
-			return (new \DateTime('', $timezone))->setTimestamp($time_utc);
+		if($apply_timezone){
+			if(!self::$timezone){
+				throw new Error('No timezone is defined');
+			}
+			
+			$timezone = new \DateTimeZone(self::$timezone);
+		}
+		
+		if($time){
+			return (new \DateTime('', $timezone))->setTimestamp($time);
 		}
 		else{
 			return new \DateTime('now', $timezone);
 		}
 	}
 	
-	static private function time_local_offset(int $time_utc=0): int{
-		return (new \DateTimeZone(self::$timezone))->getOffset($time_utc ? (new \DateTime)->setTimestamp($time_utc) : new \DateTime('now'));
+	static private function time_local_offset(int $time=0): int{
+		return (new \DateTimeZone(self::$timezone))->getOffset($time ? (new \DateTime)->setTimestamp($time) : new \DateTime('now'));
 	}
 }
+
+class Error extends \Error {}
