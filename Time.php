@@ -3,15 +3,17 @@
 namespace Time;
 
 class Time {
-	const DEFAULT_TIMEZONE 	= 'Europe/Copenhagen';
+	public const TZ_COPENHAGEN = 'Europe/Copenhagen';
 	
-	static private $locale;
+	static private $timezone;
+	static private $format_locale;
 	
-	static public function init(string $locale){
-		self::$locale = $locale;
+	static public function init(string $timezone, ?string $format_locale=null){
+		self::$timezone 		= $timezone;
+		self::$format_locale 	= $format_locale;
 	}
 	
-	static public function format(string $format, int $time_utc, bool $apply_timezone=true): string{
+	static public function format(string $format, int $time_utc, bool $apply_timezone=false): string{
 		// https://unicode-org.github.io/icu/userguide/format_parse/datetime/#date-field-symbol-table
 		
 		/*
@@ -41,10 +43,10 @@ class Time {
 		*/
 		
 		return (new \IntlDateFormatter(
-			self::$locale,
+			self::$format_locale,
 			\IntlDateFormatter::NONE,
 			\IntlDateFormatter::NONE,
-			$apply_timezone ? self::DEFAULT_TIMEZONE : null,
+			$apply_timezone ? self::$timezone : null,
 			null,
 			$format)
 		)->format(self::create_time($time_utc, false));
@@ -56,11 +58,11 @@ class Time {
 		return mktime(0,0,0, date('m', $time), date('d', $time), date('Y', $time));
 	}
 	
-	static public function datestamp(int $time=0, bool $apply_timezone=true): string{
+	static public function datestamp(int $time=0, bool $apply_timezone=false): string{
 		return self::create_time($time, $apply_timezone)->format('Y-m-d');
 	}
 	
-	static public function timestamp(int $time=0, bool $apply_timezone=true): string{
+	static public function timestamp(int $time=0, bool $apply_timezone=false): string{
 		return self::create_time($time, $apply_timezone)->format('Y-m-d H:i:s');
 	}
 	
@@ -68,15 +70,15 @@ class Time {
 		return self::create_time()->format('Y-m-d H:i:s').substr((string)microtime(), 1, 4);
 	}
 	
-	static public function timestamp_rfc(int $time=0, bool $apply_timezone=true): string{
+	static public function timestamp_rfc(int $time=0, bool $apply_timezone=false): string{
 		return self::create_time($time, $apply_timezone)->format('D, j M Y H:i:s O');
 	}
 	
-	static public function file_datestamp(int $time=0, bool $apply_timezone=true): string{
+	static public function file_datestamp(int $time=0, bool $apply_timezone=false): string{
 		return self::create_time($time, $apply_timezone)->format('Y-m-d');
 	}
 	
-	static public function file_timestamp(int $time=0, bool $apply_timezone=true): string{
+	static public function file_timestamp(int $time=0, bool $apply_timezone=false): string{
 		return self::create_time($time, $apply_timezone)->format('Y-m-d-His');
 	}
 	
@@ -161,8 +163,8 @@ class Time {
 		return -1;
 	}
 	
-	static private function create_time(int $time_utc=0, bool $apply_timezone=true){
-		$timezone = $apply_timezone ? new \DateTimeZone(self::DEFAULT_TIMEZONE) : null;
+	static private function create_time(int $time_utc=0, bool $apply_timezone=false){
+		$timezone = $apply_timezone ? new \DateTimeZone(self::$timezone) : null;
 		
 		if($time_utc){
 			return (new \DateTime('', $timezone))->setTimestamp($time_utc);
@@ -173,6 +175,6 @@ class Time {
 	}
 	
 	static private function time_local_offset(int $time_utc=0): int{
-		return (new \DateTimeZone(self::DEFAULT_TIMEZONE))->getOffset($time_utc ? (new \DateTime)->setTimestamp($time_utc) : new \DateTime('now'));
+		return (new \DateTimeZone(self::$timezone))->getOffset($time_utc ? (new \DateTime)->setTimestamp($time_utc) : new \DateTime('now'));
 	}
 }
