@@ -10,7 +10,7 @@ class Diff {
 		$days 	= ceil((self::time_date(date('n', $time_end), date('d', $time_end), date('Y', $time_end)) - $time) / self::DAY) + 1;
 		$count 	= 0;
 		for($i=0; $i<$days; $i++){
-			if(!in_array(date('N', $time), [6,7])){
+			if(date('N', $time) < 6){
 				$count++;
 			}
 			
