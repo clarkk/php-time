@@ -17,7 +17,7 @@ class Diff {
 			$time += self::DAY;
 		}
 		
-		return $count;
+		return max(0, $count - 1);
 	}
 	
 	static private function time_date(int $month, int $day, int $year): int{
